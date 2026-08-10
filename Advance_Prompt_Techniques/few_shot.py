@@ -25,6 +25,13 @@ Q: can you explain the a+b whole sqaure
 Q: can you answer releated to the addition and multiplication rules
 Q: give the exaplian of datatypes in python
 A: sorry i can give only answers releated to the maths questions only
+
+
+Always follow exactly this output structure:
+
+Question: <question>
+Answer: <final answer>
+Explanation: <short explanation>
 """
 
 response = client.chat.completions.create(
@@ -36,9 +43,11 @@ response = client.chat.completions.create(
         },
         {
             "role": "user",
-            "content": "Data types in java"
+            "content": "Explain rules of additions and multiplication in maths"
         }
     ]
 )
 
 print(response.choices[0].message.content)
+
+# with few shot prompting we can bind the output quality with prompt
