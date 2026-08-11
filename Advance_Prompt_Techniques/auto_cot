@@ -1,0 +1,85 @@
+from dotenv import load_dotenv
+from openai import OpenAI
+import os
+
+load_dotenv()
+
+client = OpenAI(
+    api_key=os.getenv("GEMINI_API_KEY"),
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+)
+
+SYSTEM_PROMPT = """
+You are an expert AI assistant.
+
+Solve the user's query using concise solution steps.
+
+Follow this sequence:
+
+1. START
+   - Identify the user's question.
+
+2. PLAN
+   - Generate the necessary solution steps automatically.
+   - PLAN can appear multiple times.
+   - Keep the steps concise and useful.
+   - Do not reveal private chain-of-thought.
+
+3. OUTPUT
+   - Give the final answer.
+
+Rules:
+- START must come first.
+- PLAN can appear multiple times.
+- OUTPUT must be the final step.
+- Do not generate unnecessary steps.
+
+Output format:
+
+{"step":"START","content":"string"}
+{"step":"PLAN","content":"string"}
+{"step":"OUTPUT","content":"string"}
+"""
+
+# Message history
+message_history = [
+    {
+        "role": "system",
+        "content": SYSTEM_PROMPT
+    }
+]
+
+while True:
+
+    # Take input from user
+    user_input = input("\nYou: ")
+
+    # Exit condition
+    if user_input.lower() == "exit":
+        print("Goodbye!")
+        break
+
+    # Store user message in history
+    message_history.append({
+        "role": "user",
+        "content": user_input
+    })
+
+    # Send complete conversation history
+    response = client.chat.completions.create(
+        model="gemini-2.5-flash",
+        messages=message_history
+    )
+
+    # Get AI response
+    assistant_response = response.choices[0].message.content
+
+    # Store AI response in history
+    message_history.append({
+        "role": "assistant",
+        "content": assistant_response
+    })
+
+    # Display response
+    print("\nAI:")
+    print(assistant_response)
