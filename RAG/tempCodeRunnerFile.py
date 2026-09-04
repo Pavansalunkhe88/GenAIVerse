@@ -3,7 +3,6 @@ from pathlib import Path
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain_qdrant import QdrantVectorStore
 
 load_dotenv()
 
@@ -31,27 +30,13 @@ texts = text_splitter.split_documents(docs)
 
 #vector embedding
 
+embeddings = GoogleGenerativeAIEmbeddings(model="gemini-embedding-2-preview")
+vector = embeddings.embed_query("hello, world!")
+vector[:5]
+
 embeddings = GoogleGenerativeAIEmbeddings(
     model="gemini-embedding-2-preview",
-    output_dimensionality=768
+    output_dimensionality=768,  # Suggested: 768, 1536, or 3072 (default)
 )
-
-# Test embedding
-vector = embeddings.embed_query("hello world")
-
-print("Embedding dimensions:", len(vector))
-
-
-#  Create Qdrant vector store
-
-
-vector_store = QdrantVectorStore.from_documents(
-    documents=texts,
-    embedding=embeddings,
-    url="http://localhost:6333",
-    collection_name="advance_prompt"
-)
-
-print("Documents successfully stored in Qdrant!")
-
-
+vector = embeddings.embed_query("hello, world!")
+len(vector)
