@@ -6,3 +6,4 @@ queque = Queue(connection=Redis(
     port=6379, db=0
 ))
 
+queque.enqueue("worker.process_query", "What is the capital of France?")
