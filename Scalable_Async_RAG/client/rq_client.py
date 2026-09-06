@@ -1,9 +1,10 @@
 from redis import Redis
 from rq import Queue
 
-queque = Queue(connection=Redis(
-    host="vector-db", 
-    port=6379, db=0
-))
+redis_conn = Redis(
+    host="localhost",
+    port=6379,
+    decode_responses=True
+)
 
-queque.enqueue("worker.process_query", "What is the capital of France?")
+queque = Queue(connection=redis_conn)
